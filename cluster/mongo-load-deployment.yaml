@@ -1,0 +1,27 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mongo-load-deployment
+  namespace: mongodb
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongo-load
+    spec:
+      containers:
+      - name: mongo-load
+        image: tacsreg.azurecr.io/mongo-load:1.0.0
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 50
+            memory: 128Ki
+          limits:
+            cpu: 50
+            memory: 128Ki
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+        - name: tacsreg.azurecr.io
