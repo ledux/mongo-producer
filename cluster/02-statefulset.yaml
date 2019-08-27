@@ -5,12 +5,17 @@ metadata:
   namespace: mongodb
 spec:
   serviceName: mongo
-  replicas: 1
+  replicas: 3
   template:
     metadata:
       labels:
         role: mongo
     spec:
+      volumes:
+        - name: secrets-volume
+          secret:
+            secretName: mongo-replica-auth
+            defaultMode: 256
       containers:
       - name: mongo
         image: mongo:3.4
@@ -23,10 +28,18 @@ spec:
             memory: 512Mi
         command:
         - mongod
+        - --bind_ip
+        - 0.0.0.0
         - --replSet
         - rs0
+        - --auth
+        - --clusterAuthMode
+        - keyFile
+        - --keyFile
+        - /etc/secrets-volume/internal-auth-keyfile
+        - --setParameter
+        - authenticationMechanisms=SCRAM-SHA-1
         - --smallfiles
-        - --noprealloc
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
@@ -45,6 +58,8 @@ spec:
         volumeMounts:
         - name: mongo-persistent-storage
           mountPath: /data/db
+        - name: secrets-volume
+          mountPath: /etc/secrets-volume
   updateStrategy:
     type: OnDelete
   volumeClaimTemplates:
