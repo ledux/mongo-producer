@@ -9,7 +9,7 @@ spec:
   template:
     metadata:
       labels:
-        role: mongo
+        app: mongo
     spec:
       volumes:
         - name: secrets-volume
