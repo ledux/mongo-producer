@@ -23,8 +23,8 @@ for (( i=0; i<$numberofreplicas; i++ )); do
 done
 echo "]});" >> $replicaCommandFile
 
-# mongo $replicaCommandFile
+mongo $replicaCommandFile
 
-# rm $replicaCommandFile
+rm $replicaCommandFile
 
 
